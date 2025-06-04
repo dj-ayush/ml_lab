@@ -1,0 +1,40 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from sklearn.metrics import confusion_matrix, classification_report
+
+df = pd.read_csv("Wisconsin Breast Cancer dataset.csv",index_col=0)
+df['diagnosis'] = df['diagnosis'].map({'M': 0, 'B': 1})
+X=df.drop(columns=['diagnosis','Unnamed: 32'])
+y = df['diagnosis']  
+print(X.columns)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+kmeans = KMeans(n_clusters=2, random_state=42, n_init=10)
+kmeans.fit(X_scaled)
+labels = kmeans.labels_
+
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+plt.figure(figsize=(10, 6))
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=labels, cmap='viridis', alpha=0.6)
+plt.title("K-Means Clustering on Breast Cancer Dataset (PCA projection)")
+plt.xlabel("PCA Component 1")
+plt.ylabel("PCA Component 2")
+plt.colorbar(label='Cluster')
+plt.grid(True)
+plt.show()
+
+plt.figure(figsize=(10, 6))
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='coolwarm', alpha=0.6)
+plt.title("True labels on Breast Cancer Dataset (PCA projection)")
+plt.xlabel("PCA Component 1")
+plt.ylabel("PCA Component 2")
+plt.colorbar(label='Cluster')
+plt.grid(True)
+plt.show()

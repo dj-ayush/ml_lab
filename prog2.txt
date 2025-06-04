@@ -1,0 +1,40 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+df = pd.read_csv("Iris.csv",index_col=0)
+df=df.select_dtypes(include='number')
+
+print("First 5 rows of the dataset:")
+print(df.head())
+
+
+x_col = 'SepalLengthCm'
+y_col = 'SepalWidthCm'
+
+plt.figure(figsize=(6, 4))
+sns.scatterplot(data=df, x=x_col, y=y_col,  palette='deep')
+plt.title(f'Scatter Plot: {x_col} vs {y_col}')
+plt.grid(True)
+plt.show()
+
+
+pearson_corr = df[x_col].corr(df[y_col])
+print(f"\nPearson Correlation between {x_col} and {y_col}: {pearson_corr:.3f}")
+
+
+cov_matrix = df.cov()
+print("\nCovariance Matrix:")
+print(cov_matrix)
+
+
+corr_matrix = df.corr()
+print("\nCorrelation Matrix:")
+print(corr_matrix)
+
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr_matrix, annot=True, fmt='.2f', cmap='coolwarm', center=0)
+plt.title('Correlation Matrix Heatmap')
+plt.show()

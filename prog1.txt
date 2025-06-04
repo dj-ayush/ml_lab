@@ -1,0 +1,71 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv("housing.csv")
+
+num_col = 'median_house_value'  
+print(f"\nAnalyzing Numerical Column: {num_col}")
+
+
+mean_val = df[num_col].mean()
+median_val = df[num_col].median()
+mode_val = df[num_col].mode().values[0]
+std_dev = df[num_col].std()
+variance = df[num_col].var()
+value_range = [df[num_col].min(),df[num_col].max()]
+
+print(f"Mean: {mean_val}")
+print(f"Median: {median_val}")
+print(f"Mode: {mode_val}")
+print(f"Standard Deviation: {std_dev}")
+print(f"Variance: {variance}")
+print(f"Range: {value_range}")
+
+
+plt.figure(figsize=(8, 4))
+sns.histplot(df[num_col], kde=True, bins=20, color='skyblue')
+plt.title(f'Histogram of {num_col}')
+plt.xlabel(num_col)
+plt.ylabel('Frequency')
+plt.grid(True)
+plt.show()
+
+
+plt.figure(figsize=(6, 2))
+sns.boxplot(x=df[num_col], color='lightgreen')
+plt.title(f'Boxplot of {num_col}')
+plt.show()
+
+
+Q1 = df[num_col].quantile(0.25)
+Q3 = df[num_col].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+outliers = df[(df[num_col] < lower_bound) | (df[num_col] > upper_bound)]
+
+print(f"\nNumber of outliers detected in '{num_col}': {len(outliers)}")
+print(outliers[[num_col]])
+
+
+cat_col = 'ocean_proximity' 
+print(f"\nAnalyzing Categorical Column: {cat_col}")
+
+
+cat_counts = df[cat_col].value_counts()
+print(cat_counts)
+
+
+plt.figure(figsize=(6, 4))
+sns.countplot(x=df[cat_col], palette='pastel')
+plt.title(f'Frequency of {cat_col}')
+plt.ylabel('Count')
+plt.grid(axis='y')
+plt.show()
+
+plt.figure(figsize=(5, 5))
+plt.pie(cat_counts, labels=cat_counts.index, autopct='%1.1f%%', colors=sns.color_palette('pastel'))
+plt.title(f'Pie Chart of {cat_col}')
+plt.show()
